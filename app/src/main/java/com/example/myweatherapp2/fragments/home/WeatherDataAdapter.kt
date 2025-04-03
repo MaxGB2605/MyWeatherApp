@@ -1,11 +1,11 @@
-package com.example.myweatherapp2.weatherapp.fragments.home
+package com.example.myweatherapp2.fragments.home
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myweatherapp2.weatherapp.data.CurrentLocation
-import com.example.myweatherapp2.weatherapp.data.WeatherData
+import com.example.myweatherapp2.data.CurrentLocation
+import com.example.myweatherapp2.data.WeatherData
 import com.example.myweatherapp2.databinding.ItemContainerCurrentLocationBinding
 
 class WeatherDataAdapter(

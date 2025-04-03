@@ -1,7 +1,7 @@
-package com.example.myweatherapp2.weatherapp.fragments.home
+package com.example.myweatherapp2.fragments.home
 
-import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +12,23 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-import com.example.myweatherapp2.weatherapp.data.CurrentLocation
+import com.example.myweatherapp2.data.CurrentLocation
 import com.example.myweatherapp2.databinding.FragmentHomeBinding
+import com.google.android.gms.location.LocationServices
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
+
+    private val homeViewModel: HomeViewModel by viewModel()
+    private val fusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
+    private val geocoder by lazy { Geocoder(requireContext()) }
 
     private val weatherDataAdapter = WeatherDataAdapter(
         onLocationClicked = { showLocationOptions() }
@@ -48,30 +58,49 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setWeatherDataAdapter()
         setWeatherData()
+        setObservers()
+    }
+
+    private fun setObservers() {
+        with(homeViewModel) {
+            currentLocation.observe(viewLifecycleOwner) {
+                val currentLocationDataState = it ?: return@observe
+                if (currentLocationDataState.isLoading) {
+                    showLoading()
+                }
+                currentLocationDataState.currentLocation?.let { currentLocation ->
+                    hideLoading()
+                    setWeatherData(currentLocation)
+                }
+                currentLocationDataState.error?.let { error ->
+                    hideLoading()
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun setWeatherDataAdapter() {
         binding.weatherDataRecyclerView.adapter = weatherDataAdapter
     }
 
-    private fun setWeatherData() {
-        weatherDataAdapter.setData(data = listOf(CurrentLocation()))
+    private fun setWeatherData(currentLocation: CurrentLocation? = null) {
+        weatherDataAdapter.setData(data = listOf(currentLocation ?: CurrentLocation()))
     }
 
 
-
     private fun getCurrentLocation() {
-        Toast.makeText(requireContext(), "getCurrentLocation()", Toast.LENGTH_SHORT).show()
+        homeViewModel.getCurrentLocation(fusedLocationProviderClient, geocoder)
     }
 
     private fun isLocationPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestLocationPermission() {
-        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        locationPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun proceedWithCurrentLocation() {
@@ -92,6 +121,20 @@ class HomeFragment : Fragment() {
                 }
             }
             show()
+        }
+    }
+
+    private fun showLoading() {
+        with(binding) {
+            weatherDataRecyclerView.visibility = View.GONE
+            swipeRefreshLayout.isRefreshing = true
+        }
+    }
+
+    private fun hideLoading() {
+        with(binding) {
+            weatherDataRecyclerView.visibility = View.VISIBLE
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
