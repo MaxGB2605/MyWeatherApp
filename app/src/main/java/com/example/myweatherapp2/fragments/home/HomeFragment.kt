@@ -11,10 +11,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-
 import com.example.myweatherapp2.data.CurrentLocation
 import com.example.myweatherapp2.databinding.FragmentHomeBinding
+import com.example.myweatherapp2.storage.SharedPreferencesManager
 import com.google.android.gms.location.LocationServices
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -23,16 +24,23 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
 
+
     private val homeViewModel: HomeViewModel by viewModel()
     private val fusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
+
     private val geocoder by lazy { Geocoder(requireContext()) }
+
 
     private val weatherDataAdapter = WeatherDataAdapter(
         onLocationClicked = { showLocationOptions() }
     )
+
+
+    private val sharedPreferencesManager: SharedPreferencesManager by inject()
+
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -44,10 +52,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -57,7 +66,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setWeatherDataAdapter()
-        setWeatherData()
+        setWeatherData(currentLocation = sharedPreferencesManager.getCurrentLocation())
         setObservers()
     }
 
@@ -70,6 +79,7 @@ class HomeFragment : Fragment() {
                 }
                 currentLocationDataState.currentLocation?.let { currentLocation ->
                     hideLoading()
+                    sharedPreferencesManager.saveCurrentLocation(currentLocation)
                     setWeatherData(currentLocation)
                 }
                 currentLocationDataState.error?.let { error ->
