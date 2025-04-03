@@ -1,5 +1,6 @@
-package com.example.myweatherapp2.fragments.home
+package com.example.myweatherapp2.weatherapp.fragments.home
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,12 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-import com.example.myweatherapp2.data.CurrentLocation
+import com.example.myweatherapp2.weatherapp.data.CurrentLocation
 import com.example.myweatherapp2.databinding.FragmentHomeBinding
-
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -58,15 +55,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setWeatherData() {
-        weatherDataAdapter.setData(data = listOf(CurrentLocation(date = getCurrentDate())))
+        weatherDataAdapter.setData(data = listOf(CurrentLocation()))
     }
 
-    private fun getCurrentDate(): String {
-        val currentDate = Date()
-        val formatter = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-        return "Today, ${formatter.format(currentDate)}"
 
-    }
 
     private fun getCurrentLocation() {
         Toast.makeText(requireContext(), "getCurrentLocation()", Toast.LENGTH_SHORT).show()
@@ -74,12 +66,12 @@ class HomeFragment : Fragment() {
 
     private fun isLocationPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestLocationPermission() {
-        locationPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun proceedWithCurrentLocation() {
