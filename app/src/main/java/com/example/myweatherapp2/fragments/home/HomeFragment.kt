@@ -1,5 +1,6 @@
 package com.example.myweatherapp2.fragments.home
 
+
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
@@ -11,6 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+
+
+import androidx.navigation.fragment.findNavController
+import com.example.myweatherapp2.R
 import com.example.myweatherapp2.data.CurrentLocation
 import com.example.myweatherapp2.databinding.FragmentHomeBinding
 import com.example.myweatherapp2.storage.SharedPreferencesManager
@@ -128,6 +133,7 @@ class HomeFragment : Fragment() {
             setItems(options) { _, which ->
                 when (which) {
                     0 -> proceedWithCurrentLocation()
+                    1 -> startManualLocationSearch()
                 }
             }
             show()
@@ -146,6 +152,11 @@ class HomeFragment : Fragment() {
             weatherDataRecyclerView.visibility = View.VISIBLE
             swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+
+    private fun startManualLocationSearch() {
+        findNavController().navigate(R.id.action_home_fragment_to_location_fragment)
     }
 
 }
