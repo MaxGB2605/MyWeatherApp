@@ -4,5 +4,5 @@ import com.example.myweatherapp2.network.repository.WeatherDataRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { WeatherDataRepository() }
+    single { WeatherDataRepository(weatherAPI = get()) }
 }
