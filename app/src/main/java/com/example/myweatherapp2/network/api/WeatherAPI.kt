@@ -9,7 +9,7 @@ interface WeatherAPI {
 
 
     companion object {
-        const val BASE_URL = "https://api.weatherapi.com/v1"
+        const val BASE_URL = "https://api.weatherapi.com/v1/"
         const val API_KEY = "f7ce63eeaaa248079d7143947250604"
     }
 
