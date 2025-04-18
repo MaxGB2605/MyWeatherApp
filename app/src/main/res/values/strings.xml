@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">My Weather App 2</string>
     <string name="search_location">Search location</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="chance_of_rain">Chance Of Rain</string>
 </resources>
