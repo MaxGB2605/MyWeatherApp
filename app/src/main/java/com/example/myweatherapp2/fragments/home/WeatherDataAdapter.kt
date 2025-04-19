@@ -1,6 +1,5 @@
 package com.example.myweatherapp2.fragments.home
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,17 +8,30 @@ import com.example.myweatherapp2.data.WeatherData
 import com.example.myweatherapp2.databinding.ItemContainerCurrentLocationBinding
 
 class WeatherDataAdapter(
-    private val onLocationClicked: () -> Unit
+    private val onLocationClicked: () -> Unit,
 ) : RecyclerView.Adapter<WeatherDataAdapter.CurrentLocationViewHolder>() {
+
+
+    private companion object {
+        const val INDEX_CURRENT_LOCATION = 0
+        const val INDEX_CURRENT_WEATHER = 1
+        const val INDEX_FORECAST = 2
+    }
+
 
     private val weatherData = mutableListOf<WeatherData>()
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<WeatherData>) {
-        weatherData.clear()
-        weatherData.addAll(data)
-        notifyDataSetChanged()
+
+    fun setCurrentLocation(currentLocation: CurrentLocation) {
+        if (weatherData.isEmpty()) {
+            weatherData.add(INDEX_CURRENT_LOCATION, currentLocation)
+            notifyItemInserted(INDEX_CURRENT_LOCATION)
+        } else {
+            weatherData[INDEX_CURRENT_LOCATION] = currentLocation
+            notifyItemChanged(INDEX_CURRENT_LOCATION)
+        }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrentLocationViewHolder {
         return CurrentLocationViewHolder(
@@ -40,7 +52,7 @@ class WeatherDataAdapter(
     }
 
     inner class CurrentLocationViewHolder(
-        private val binding: ItemContainerCurrentLocationBinding
+        private val binding: ItemContainerCurrentLocationBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(currentLocation: CurrentLocation) {
             with(binding) {
