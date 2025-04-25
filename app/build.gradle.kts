@@ -51,31 +51,31 @@ dependencies {
 
     //Scalable Size Unit (support for different screen sizes)
     // https://mvnrepository.com/artifact/com.intuit.sdp/sdp-android
-    implementation("com.intuit.sdp:sdp-android:1.1.0")
-    implementation("com.intuit.ssp:ssp-android:1.1.0")
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
 
     //Navigation Component
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     //Kotlin (dependency injector)
-    implementation("io.insert-koin:koin-android:3.4.2")
+    implementation(libs.koin.android)
 
     //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     //View model
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //Coil
-    implementation("io.coil-kt:coil:2.5.0")
+    implementation(libs.coil)
 
     //Location
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.play.services.location)
 
     //Swipe refresh layout
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation(libs.androidx.swiperefreshlayout)
 
 
 }

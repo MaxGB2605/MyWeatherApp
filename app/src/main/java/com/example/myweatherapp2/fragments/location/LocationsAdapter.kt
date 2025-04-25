@@ -49,7 +49,7 @@ class LocationsAdapter(
         fun bind(remoteLocation: RemoteLocation) {
             with(remoteLocation) {
                 val location = "$name, $region, $country"
-                binding.textRemoteLacation.text = location
+                binding.textRemoteLocation.text = location
                 binding.root.setOnClickListener { onLocationClicked(remoteLocation) }
             }
         }

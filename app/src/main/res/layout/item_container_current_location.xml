@@ -52,4 +52,6 @@
         app:layout_constraintBottom_toBottomOf="@id/imageLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textCurrentDate" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
