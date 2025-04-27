@@ -1,5 +1,6 @@
 package com.example.myweatherapp2.fragments.home
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -120,9 +121,19 @@ class WeatherDataAdapter(
         private val binding: ItemContainerCurrentWeatherBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(currentWeather: CurrentWeather) {
+
+
             with(binding) {
                 imageIcon.load("https:${currentWeather.icon}") { crossfade(true) }
-                textTemperature.text = String.format("%s\u2103", currentWeather.temperature)
+                // textTemperature.text = String.format("%s\u00B0C", currentWeather.temperature)
+
+                Log.d(
+                    "WeatherApp",
+                    "Formatted Temp: ${String.format("%s\u00B0C", currentWeather.temperature)}"
+                )
+                textTemperature.text = String.format("%s\u00B0C", currentWeather.temperature)
+
+
                 textWind.text = String.format("%s km/h", currentWeather.wind)
                 textHumidity.text = String.format("%s%%", currentWeather.humidity)
                 textChanceOfRain.text = String.format("%s%%", currentWeather.chanceOfRain)
@@ -136,11 +147,21 @@ class WeatherDataAdapter(
         fun bind(forecast: Forecast) {
             with(binding) {
                 textTime.text = forecast.time
-                textTemperature.text = String.format("%s\u2103", forecast.temperature)
+                //textTemperature.text = String.format("%s\u00B0C", forecast.temperature)
+                Log.d(
+                    "WeatherApp",
+                    "Formatted Temp: ${String.format("%s\u00B0C", forecast.temperature)}"
+                )
+                textTemperature.text = String.format("%s\u00B0C", forecast.temperature)
+
                 textFeelsLikeTemperature.text =
-                    String.format("%s\u2103", forecast.feelsLikeTemperature)
+                    String.format("%s\u00B0C", forecast.feelsLikeTemperature)
                 imageIcon.load("https:${forecast.icon}") { crossfade(true) }
+
+
             }
+
+
         }
     }
 

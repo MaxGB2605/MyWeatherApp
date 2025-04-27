@@ -38,14 +38,15 @@
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/raising_black"
-            android:textSize="@dimen/_48ssp"
+            android:textSize="@dimen/_48sdp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageIcon"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/imageIcon"
             app:layout_constraintTop_toTopOf="@+id/imageIcon"
+            app:layout_constraintVertical_bias="0.458"
             tools:text="27\u2103" />
-
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardWind"
@@ -88,7 +89,7 @@
                     android:id="@+id/textWind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15 km/h"
+                    android:text="@string/_15_km_h"
                     android:textColor="@color/raising_black"
                     android:textSize="@dimen/_13ssp"
                     android:textStyle="bold" />

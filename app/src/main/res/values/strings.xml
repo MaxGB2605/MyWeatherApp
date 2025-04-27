@@ -4,4 +4,5 @@
     <string name="wind">Wind</string>
     <string name="humidity">Humidity</string>
     <string name="chance_of_rain">Chance Of Rain</string>
+    <string name="_15_km_h">15 km/h</string>
 </resources>
