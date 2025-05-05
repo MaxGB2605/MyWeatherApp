@@ -1,6 +1,7 @@
 package com.example.myweatherapp2.fragments.home
 
 import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import com.example.myweatherapp2.network.repository.WeatherDataRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class HomeViewModel(
@@ -21,6 +23,8 @@ class HomeViewModel(
 
 
     //region Current Location
+
+
     private val _currentLocation = MutableLiveData<LiveDataEvent<CurrentLocationDataState>>()
     val currentLocation: LiveData<LiveDataEvent<CurrentLocationDataState>> get() = _currentLocation
 
@@ -84,7 +88,38 @@ class HomeViewModel(
     fun getWeatherData(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             emitWeatherDataUiState(isLoading = true)
-            weatherDataRepository.getWeatherData(latitude, longitude)?.let { weatherData ->
+
+            Log.d("HomeViewModel", "Calling repository.getWeatherData")
+
+
+            val weatherData = weatherDataRepository.getWeatherData(latitude, longitude)
+
+            //weatherDataRepository.getWeatherData(latitude, longitude)?.let { weatherData ->
+
+            if (weatherData != null) {
+                Log.d("HomeViewModel", "Weather data received")
+
+                //added 05.05.2025
+                // Move these outside of the UI state call
+                val now = Calendar.getInstance().time
+                val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+                val forecast = weatherData.forecast.forecastDay
+                    .take(3) // take next 3 days
+                    .flatMap { it.hour }
+                    .filter { hourData ->
+                        val forecastTime = inputFormat.parse(hourData.time)
+                        forecastTime != null && forecastTime.after(now)
+                    }
+                    .map {
+                        Forecast(
+                            time = getForecastTime(it.time),
+                            temperature = it.temperature,
+                            feelsLikeTemperature = it.feelsLikeTemperature,
+                            icon = it.condition.icon
+                        )
+                    }
+
                 emitWeatherDataUiState(
                     currentWeather = CurrentWeather(
                         icon = weatherData.current.condition.icon,
@@ -93,18 +128,33 @@ class HomeViewModel(
                         humidity = weatherData.current.humidity,
                         chanceOfRain = weatherData.forecast.forecastDay.first().day.chanceOfRain
                     ),
-                    forecast = weatherData.forecast.forecastDay.first().hour.map {
-                        Forecast(
-                            time = getForecastTime(it.time),
-                            temperature = it.temperature,
-                            feelsLikeTemperature = it.feelsLikeTemperature,
-                            icon = it.condition.icon
-                        )
-                    }
+                    //added 05.05.2025
+                    forecast = forecast
+
+
+//                    forecast = weatherData.forecast.forecastDay.first().hour.map {
+//                        Forecast(
+//                            time = getForecastTime(it.time),
+//                            temperature = it.temperature,
+//                            feelsLikeTemperature = it.feelsLikeTemperature,
+//                            icon = it.condition.icon
+//                        )
+//                    }
                 )
-            } ?: emitWeatherDataUiState(error = "Unable to fetch weather data")
+            } else {
+                Log.d("HomeViewModel", "Failed to fetch weather data")
+                emitWeatherDataUiState(error = "Unable to fetch weather data")
+            }
+            //?: emitWeatherDataUiState(error = "Unable to fetch weather data")
         }
     }
+
+
+    //added to he;lp with getting time for the forecast past 23:00
+    private fun getCurrentTime(): String {
+        return SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
+    }
+
 
     private fun emitWeatherDataUiState(
         isLoading: Boolean = false,
@@ -125,6 +175,7 @@ class HomeViewModel(
 
 
     private fun getForecastTime(dateTime: String): String {
+
         val pattern = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val date = pattern.parse(dateTime) ?: return dateTime
         return SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)

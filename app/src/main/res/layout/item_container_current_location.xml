@@ -9,11 +9,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textCurrentDate"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_4sdp"
         android:textColor="@color/sonic_silver"
-        android:textSize="@dimen/_16ssp"
+        android:textSize="@dimen/_20ssp"
         android:textStyle="bold"
         android:padding="@dimen/_5sdp"
         android:textAlignment="center"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5.20dp"
         android:layout_marginEnd="5.20dp"
-        android:padding="@dimen/_5sdp"
+        android:padding="@dimen/_8sdp"
         android:ellipsize="none"
         android:maxLines="2"
         android:text="Fair Lawn, NJ, USA"
@@ -57,7 +57,7 @@
         android:tint="@color/sonic_silver"
         app:layout_constraintBottom_toBottomOf="@id/imageLocation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textCurrentDate" />
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
