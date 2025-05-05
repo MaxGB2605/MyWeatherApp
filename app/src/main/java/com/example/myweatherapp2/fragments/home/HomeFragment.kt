@@ -34,6 +34,7 @@ class HomeFragment : Fragment() {
         const val KEY_LONGITUDE = "longitude"
     }
 
+
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
 
@@ -81,9 +82,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         setWeatherDataAdapter()
         setObservers()
         setListeners()
+
+
+
         if (!isInitialLocationSet) {
             setCurrentLocation(currentLocation = sharedPreferencesManager.getCurrentLocation())
             isInitialLocationSet = true
@@ -93,7 +99,14 @@ class HomeFragment : Fragment() {
 
     private fun setListeners() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            setCurrentLocation(sharedPreferencesManager.getCurrentLocation())
+
+            val currentLocation = sharedPreferencesManager.getCurrentLocation()
+            setCurrentLocation(currentLocation)
+            currentLocation?.let {
+                getWeatherData(it) // <--- Force weather update here
+            }
+
+            // setCurrentLocation(sharedPreferencesManager.getCurrentLocation())
         }
     }
 
@@ -128,6 +141,9 @@ class HomeFragment : Fragment() {
                     Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
                 }
             }
+
+
+
         }
     }
 
