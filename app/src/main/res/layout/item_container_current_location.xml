@@ -11,12 +11,11 @@
         android:id="@+id/textCurrentDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_4sdp"
+        android:padding="@dimen/_5sdp"
+        android:textAlignment="center"
         android:textColor="@color/sonic_silver"
         android:textSize="@dimen/_20ssp"
         android:textStyle="bold"
-        android:padding="@dimen/_5sdp"
-        android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/imageCurrentLocation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,11 +23,12 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageLocation"
-        android:layout_width="@dimen/_22sdp"
-        android:layout_height="@dimen/_22sdp"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:src="@drawable/round_location_on_24"
         android:tint="@color/sonic_silver"
+        android:layout_margin="@dimen/_8sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textCurrentDate" />
 
@@ -44,6 +44,7 @@
         android:text="Fair Lawn, NJ, USA"
         android:textColor="@color/raising_black"
         android:textSize="@dimen/_12ssp"
+        android:layout_margin="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="@+id/imageLocation"
         app:layout_constraintEnd_toStartOf="@+id/imageCurrentLocation"
         app:layout_constraintStart_toEndOf="@+id/imageLocation"
@@ -51,13 +52,16 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageCurrentLocation"
-        android:layout_width="@dimen/_22sdp"
-        android:layout_height="@dimen/_22sdp"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_margin="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:src="@drawable/round_my_location_24"
+
         android:tint="@color/sonic_silver"
-        app:layout_constraintBottom_toBottomOf="@id/imageLocation"
+
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/textCurrentDate" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

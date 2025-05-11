@@ -109,7 +109,15 @@ class WeatherDataAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(currentLocation: CurrentLocation) {
             with(binding) {
-                textCurrentDate.text = currentLocation.date
+
+                //added May 10.2025 to update date on swipe refresh
+                val dateFormat =
+                    java.text.SimpleDateFormat("EEEE, MMMM d, yyyy", java.util.Locale.getDefault())
+                val currentDate = dateFormat.format(java.util.Date())
+                textCurrentDate.text = "Today, $currentDate"
+
+
+
                 textCurrentLocation.text = currentLocation.location
                 imageCurrentLocation.setOnClickListener { onLocationClicked() }
                 textCurrentLocation.setOnClickListener { onLocationClicked() }
@@ -164,5 +172,6 @@ class WeatherDataAdapter(
 
         }
     }
+
 
 }

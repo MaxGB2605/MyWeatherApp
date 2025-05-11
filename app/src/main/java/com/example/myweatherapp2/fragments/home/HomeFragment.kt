@@ -84,6 +84,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
         setWeatherDataAdapter()
         setObservers()
         setListeners()
