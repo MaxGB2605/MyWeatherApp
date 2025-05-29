@@ -1,5 +1,6 @@
 package com.example.myweatherapp2.fragments.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,13 +30,26 @@ class WeatherDataAdapter(
 
 
     fun setCurrentLocation(currentLocation: CurrentLocation) {
-        if (weatherData.isEmpty()) {
-            weatherData.add(INDEX_CURRENT_LOCATION, currentLocation)
-            notifyItemInserted(INDEX_CURRENT_LOCATION)
+        //Added on May 17, 2025 to update location on swipe
+        val index = weatherData.indexOfFirst { it is CurrentLocation }
+
+        if (index != -1) {
+            weatherData[index] = currentLocation
+            notifyItemChanged(index)
         } else {
-            weatherData[INDEX_CURRENT_LOCATION] = currentLocation
-            notifyItemChanged(INDEX_CURRENT_LOCATION)
+            weatherData.add(0, currentLocation)
+            notifyItemInserted(0)
         }
+
+
+// ------------Original----------------
+//        if (weatherData.isEmpty()) {
+//            weatherData.add(INDEX_CURRENT_LOCATION, currentLocation)
+//            notifyItemInserted(INDEX_CURRENT_LOCATION)
+//        } else {
+//            weatherData[INDEX_CURRENT_LOCATION] = currentLocation
+//            notifyItemChanged(INDEX_CURRENT_LOCATION)
+//        }
     }
 
 
@@ -51,10 +65,28 @@ class WeatherDataAdapter(
 
 
     fun setForecastData(forecast: List<Forecast>) {
+        //Added on May 17, 2025 to prevent crash
+        // Ensure we don't crash when inserting at INDEX_FORECAST
+        if (weatherData.size < INDEX_FORECAST) {
+            weatherData.addAll(forecast)
+            notifyItemRangeInserted(weatherData.size - forecast.size, forecast.size)
+            return
+        }
+
+        // Count how many forecasts exist and remove them
+        val oldForecastCount = weatherData.count { it is Forecast }
         weatherData.removeAll { it is Forecast }
-        notifyItemRangeRemoved(INDEX_FORECAST, weatherData.size)
+        notifyItemRangeRemoved(INDEX_FORECAST, oldForecastCount)
+
+        // Insert new forecast data
         weatherData.addAll(INDEX_FORECAST, forecast)
-        notifyItemRangeChanged(INDEX_FORECAST, weatherData.size)
+        notifyItemRangeInserted(INDEX_FORECAST, forecast.size)
+
+//original  -----------------
+//        weatherData.removeAll { it is Forecast }
+//        notifyItemRangeRemoved(INDEX_FORECAST, weatherData.size)
+//        weatherData.addAll(INDEX_FORECAST, forecast)
+//        notifyItemRangeChanged(INDEX_FORECAST, weatherData.size)
     }
 
 
@@ -107,9 +139,20 @@ class WeatherDataAdapter(
     inner class CurrentLocationViewHolder(
         private val binding: ItemContainerCurrentLocationBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(currentLocation: CurrentLocation) {
             with(binding) {
-                textCurrentDate.text = currentLocation.date
+
+                //added May 10.2025 to update date on swipe refresh
+                val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                val currentTime = timeFormat.format(java.util.Date())
+                val dateFormat =
+                    java.text.SimpleDateFormat("EEEE, MMMM d, yyyy", java.util.Locale.getDefault())
+                val currentDate = dateFormat.format(java.util.Date())
+                textCurrentDate.text = "$currentDate $currentTime"
+
+
+
                 textCurrentLocation.text = currentLocation.location
                 imageCurrentLocation.setOnClickListener { onLocationClicked() }
                 textCurrentLocation.setOnClickListener { onLocationClicked() }
@@ -125,7 +168,7 @@ class WeatherDataAdapter(
 
             with(binding) {
                 imageIcon.load("https:${currentWeather.icon}") { crossfade(true) }
-                // textTemperature.text = String.format("%s\u00B0C", currentWeather.temperature)
+                //textTemperature.text = String.format("%s\u00B0C", currentWeather.temperature)
 
                 Log.d(
                     "WeatherApp",
@@ -164,5 +207,6 @@ class WeatherDataAdapter(
 
         }
     }
+
 
 }

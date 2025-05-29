@@ -105,7 +105,7 @@ class HomeViewModel(
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
 
                 val forecast = weatherData.forecast.forecastDay
-                    .take(3) // take next 3 days
+                    .take(2) // take next 3 days
                     .flatMap { it.hour }
                     .filter { hourData ->
                         val forecastTime = inputFormat.parse(hourData.time)
@@ -117,8 +117,10 @@ class HomeViewModel(
                             temperature = it.temperature,
                             feelsLikeTemperature = it.feelsLikeTemperature,
                             icon = it.condition.icon
+
                         )
                     }
+
 
                 emitWeatherDataUiState(
                     currentWeather = CurrentWeather(

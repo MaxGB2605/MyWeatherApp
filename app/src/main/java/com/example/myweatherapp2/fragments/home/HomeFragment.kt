@@ -84,9 +84,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
         setWeatherDataAdapter()
         setObservers()
         setListeners()
+
+        //Added on May 17, 2025 to update location on swipe
+        setLocationListeners()
 
 
 
@@ -106,10 +110,23 @@ class HomeFragment : Fragment() {
                 getWeatherData(it) // <--- Force weather update here
             }
 
-            // setCurrentLocation(sharedPreferencesManager.getCurrentLocation())
+            setCurrentLocation(sharedPreferencesManager.getCurrentLocation())
         }
     }
 
+    //Added on May 17, 2025 to update location on swipe
+    private fun setLocationListeners() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            // Check if location permission is granted
+            if (isLocationPermissionGranted()) {
+                // Fetch the current location
+                getCurrentLocation()
+            } else {
+                // Request location permission
+                requestLocationPermission()
+            }
+        }
+    }
 
     private fun setObservers() {
         with(homeViewModel) {
@@ -119,7 +136,7 @@ class HomeFragment : Fragment() {
                     showLoading()
                 }
                 currentLocationDataState.currentLocation?.let { currentLocation ->
-                    hideLoading()
+                    showLoading()
                     sharedPreferencesManager.saveCurrentLocation(currentLocation)
                     setCurrentLocation(currentLocation)
                 }
@@ -130,18 +147,27 @@ class HomeFragment : Fragment() {
             }
             weatherData.observe(viewLifecycleOwner) {
                 val weatherDataState = it.getContentIfNotHandled() ?: return@observe
+
                 binding.swipeRefreshLayout.isRefreshing = weatherDataState.isLoading
+
                 weatherDataState.currentWeather?.let { currentWeather ->
                     weatherDataAdapter.setCurrentWeather(currentWeather)
                 }
                 weatherDataState.forecast?.let { forecasts ->
                     weatherDataAdapter.setForecastData(forecasts)
                 }
+
+                //Added on May 17, 2025 to hide spinner after weather data is loaded
+                if (!weatherDataState.isLoading) {
+                    hideLoading()
+                }
+
+
                 weatherDataState.error?.let { error ->
+                    hideLoading()
                     Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
                 }
             }
-
 
 
         }
@@ -153,6 +179,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setCurrentLocation(currentLocation: CurrentLocation? = null) {
+
         weatherDataAdapter.setCurrentLocation(currentLocation ?: CurrentLocation())
         currentLocation?.let { getWeatherData(currentLocation = it) }
     }
@@ -196,19 +223,21 @@ class HomeFragment : Fragment() {
 
     private fun showLoading() {
         with(binding) {
-            weatherDataRecyclerView.visibility = View.GONE
-            swipeRefreshLayout.isEnabled = false
+            weatherDataRecyclerView.visibility = View.VISIBLE
+            swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.isRefreshing = true
         }
     }
 
-    private fun hideLoading() {
-        with(binding) {
-            weatherDataRecyclerView.visibility = View.VISIBLE
-            swipeRefreshLayout.isEnabled = true
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
+
+//-------original location-----------------
+//    private fun hideLoading() {
+//        with(binding) {
+//            weatherDataRecyclerView.visibility = View.VISIBLE
+//            swipeRefreshLayout.isEnabled = true
+//            swipeRefreshLayout.isRefreshing = false
+//        }
+//    }
 
 
     private fun startManualLocationSearch() {
@@ -242,6 +271,15 @@ class HomeFragment : Fragment() {
                 latitude = currentLocation.latitude,
                 longitude = currentLocation.longitude
             )
+        }
+    }
+
+    // Moved it to keep spinner till data is loaded
+    private fun hideLoading() {
+        with(binding) {
+            weatherDataRecyclerView.visibility = View.VISIBLE
+            swipeRefreshLayout.isEnabled = true
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
