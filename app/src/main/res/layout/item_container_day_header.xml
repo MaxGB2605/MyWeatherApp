@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textDayHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_8sdp"
+    android:textSize="@dimen/_16sdp"
+    android:textStyle="bold"
+    android:textColor="@color/humidity_color"
+    android:background="@color/cultured"
+    >
+
+</androidx.constraintlayout.widget.ConstraintLayout>

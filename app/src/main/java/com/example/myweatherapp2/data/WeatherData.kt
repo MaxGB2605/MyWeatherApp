@@ -28,7 +28,10 @@ data class Forecast(
     val temperature: Float,
     val feelsLikeTemperature: Float,
     val icon: String,
+
 ) : WeatherData()
+
+
 
 
 private fun getCurrentDate(): String {
